@@ -1,0 +1,6 @@
+[submodule "AtlasLib"]
+	path = AtlasLib
+	url = https://github.com/MSh103/AtlasLib.git
+[submodule "AtlasRenderer"]
+	path = AtlasRenderer
+	url = https://github.com/MSh103/AtlasRenderer.git

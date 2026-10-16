@@ -1,0 +1,75 @@
+## =======================================================================
+## Visual Studio 2026 & C++ Project Git Ignore Rules
+## =======================================================================
+
+# --- Visual Studio Internal & Cache Directories ---
+.vs/
+
+# --- Build Outputs & Binaries ---
+[Dd]ebug/
+[Rr]elease/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+[Aa][Rr][Mm]64[Ee][Cc]/
+x64/
+x86/
+bin/
+bin-int/
+obj/
+out/
+bld/
+
+# --- C++ Object and Linker Files ---
+*.obj
+*.ilk
+*.pdb
+*.tlb
+*.tli
+*.tlh
+*.tmp
+*.rsp
+*.pgc
+*.pgd
+*.meta
+*.iobj
+*.ipdb
+
+# --- Precompiled Headers & Static/Dynamic Libraries ---
+*.pch
+*.lib
+*.lib.recipe
+*.a
+*.dll
+*.so
+*.dylib
+*.exe
+*.exe.recipe
+*.out
+*.app
+*.idb
+
+# --- Visual Studio User Specific & Cache Files ---
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+*.ncb
+*.sdf
+*.opensdf
+*.opendb
+
+# --- Diagnostic & Log Files ---
+*.log
+*.tlog
+*.lastbuildstate
+*.unsuccessfulbuild
+
+*.sln
+*.slnx
+*.vcxproj
+*.vcxproj.filters
+*.vcxproj.user
+*.vcxproj.user
+
+*.ini
