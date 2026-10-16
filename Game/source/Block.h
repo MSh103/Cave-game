@@ -5,6 +5,12 @@
 
 struct MeshCPU;
 
+enum class Block : int
+{
+	Air = 0,
+	Grass = 1,
+};
+
 enum class BlockFace : int
 {
 	Top,
@@ -12,7 +18,7 @@ enum class BlockFace : int
 	Left,
 	Right,
 	Front,
-	Back
+	Back,
 };
 
 MeshCPU getBlockFace(const BlockFace& face);

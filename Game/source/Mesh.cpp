@@ -10,6 +10,28 @@ void MeshCPU::pushIndex(const uint32_t& index)
 	indices.push_back(index);
 }
 
+void MeshCPU::addMesh(const MeshCPU& other)
+{
+	size_t vertexOffset = vertices.size();
+
+	for (size_t i = 0; i < other.vertices.size(); i++)
+		vertices.push_back(other.vertices[i]);
+	
+	for (size_t i = 0; i < other.indices.size(); i++)
+		indices.push_back(other.indices[i] + vertexOffset);
+}
+
+void MeshCPU::addMeshPosition(const MeshCPU& other, const glm::vec3& pos)
+{
+	size_t vertexOffset = vertices.size();
+
+	for (size_t i = 0; i < other.vertices.size(); i++)
+		vertices.push_back({ pos +  other.vertices[i].pos, other.vertices[i].color });
+
+	for (size_t i = 0; i < other.indices.size(); i++)
+		indices.push_back(other.indices[i] + vertexOffset);
+}
+
 void MeshGPU::addMeshCPU(MeshCPU* cpu)
 {
 	vertexArray = std::make_unique<Atlas::VertexArray>();

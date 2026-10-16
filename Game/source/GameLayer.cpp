@@ -11,64 +11,55 @@ void Game::OnAttach()
 	m_Color.g = 0.0f;
 	m_Color.b = 0.0f;
 
-	Vertex vertices[8] = {
-		{ {-0.5f, 0.5f,  0.5f}, {1.f, 0.f, 0.f} }, // TL
-		{ {-0.5f,-0.5f,  0.5f}, {0.f, 1.f, 0.f} }, // BL
-		{ { 0.5f,-0.5f,  0.5f}, {0.f, 0.f, 1.f} }, // BR
-		{ { 0.5f, 0.5f,  0.5f}, {1.f, 1.f, 1.f} }, // TR
-
-		{ { 0.5f, 0.5f, -0.5f}, {1.f, 1.f, 1.f} }, // TR
-		{ { 0.5f,-0.5f, -0.5f}, {0.f, 0.f, 1.f} }, // BR
-		{ {-0.5f,-0.5f, -0.5f}, {0.f, 1.f, 0.f} }, // BL
-		{ {-0.5f, 0.5f, -0.5f}, {1.f, 0.f, 0.f} }, // TL
+	Block blocks[5][5] = {
+		{Block::Grass, Block::Grass, Block::Grass, Block::Grass, Block::Grass},
+		{Block::Grass, Block::Grass, Block::Grass, Block::Grass, Block::Grass},
+		{Block::Grass, Block::Grass, Block::Grass, Block::Grass, Block::Grass},
+		{Block::Grass, Block::Grass, Block::Grass, Block::Grass, Block::Grass},
+		{Block::Grass, Block::Grass, Block::Grass, Block::Grass, Block::Grass},
 	};
 
-	uint32_t indices[3*4] = {
-		0, 1, 2,
-		2, 3, 0,
-		
-		4, 5, 6,
-		6, 7, 4,
-	};
+	for (size_t x = 0; x < 5; x++)
+	{
+		for (size_t z = 0; z < 5; z++)
+		{
+			Block block = blocks[x][z];
 
-	for (int i = 0; i < 8; i++)
-		m_MeshCPU.pushVertex(vertices[i]);
-	for (int i = 0; i < 12; i++)
-		m_MeshCPU.pushIndex(indices[i]);
+			if (x == 0)
+				m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Left), { x, 0.f, z });
+
+			if (x == 4)
+				m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Right), { x, 0.f, z });
+
+			if (z == 0)
+				m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Back), { x, 0.f, z });
+
+			if (z == 4)
+				m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Front), { x, 0.f, z });
+
+			m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Top), { x, 0.f, z });
+			m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Bottom), { x, 0.f, z });
+
+		}
+	}
+
 
 	m_MeshGPU.addMeshCPU(&m_MeshCPU);
 
-	//m_VAO = std::make_unique<Atlas::VertexArray>();
-	m_Shader = std::make_shared<Atlas::Shader>();
 
+
+	m_Shader = std::make_shared<Atlas::Shader>();
 	m_Shader->LoadFromFile(Atlas::ShaderType::Vertex, "assets/Vertex.glsl");
 	m_Shader->LoadFromFile(Atlas::ShaderType::Fragment, "assets/Fragment.glsl");
-	//m_Shader->LoadFromFile(Atlas::ShaderType::Basic, "assets/Basic.glsl");
 	m_Shader->LinkObjectsToProgram();
 
-	//std::shared_ptr<Atlas::VertexBuffer> VBO = std::make_shared<Atlas::VertexBuffer>(vertices, sizeof(Vertex) * 4);
-	//VBO->Use();
-	//VBO->SetLayout({
-	//	{Atlas::ShaderDataType::Float3, "a_Position"},
-	//	{Atlas::ShaderDataType::Float3, "a_Color"},
-	//	});
-	//m_VAO->Use();
-	//m_VAO->AddVertexBuffer(VBO);
-
-	//std::shared_ptr<Atlas::IndexBuffer> IBO = std::make_shared<Atlas::IndexBuffer>(indices, 6);
-	//IBO->Use();
-	//m_VAO->SetIndexBuffer(IBO);
+	
 
 	m_Transform.Position = { 0.f, 0.f, 0.f };
 	m_Transform.Rotation = { 0.f, 0.f, 0.f };
 	m_Transform.Scale = { 1.f, 1.f, 1.f };
 
 	m_Model = glm::mat4(1.0f);
-	//m_View = glm::mat4(1.0f);
-	//m_Projection = glm::mat4(1.0f);
-	//m_Projection = glm::perspective(glm::radians(45.f), width / height, 0.1f, 100.f);
-	//m_View = glm::translate(m_View, glm::vec3(0.f, 0.f, -3.0f));
-
 }
 
 void Game::OnDetach()
@@ -105,8 +96,9 @@ void Game::OnRender()
 	glClearColor(m_Color.r, m_Color.g, m_Color.b, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//glEnable(GL_CULL_FACE);
-	glCullFace(GL_CW);
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 	if(m_Debug)
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	else

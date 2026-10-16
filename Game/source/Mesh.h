@@ -17,6 +17,8 @@ struct MeshCPU
 
 	void pushVertex(const Vertex& vertex);
 	void pushIndex(const uint32_t& index);
+	void addMesh(const MeshCPU& other);
+	void addMeshPosition(const MeshCPU& other, const glm::vec3& pos);
 };
 
 struct MeshGPU
