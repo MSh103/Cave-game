@@ -1,4 +1,4 @@
-workspace "AtlasEcosystem"
+workspace "Minecraft"
         architecture "x64"
 
         configurations

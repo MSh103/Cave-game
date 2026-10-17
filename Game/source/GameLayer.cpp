@@ -25,6 +25,7 @@ void Game::OnAttach()
 	m_Color.g = 0.0f;
 	m_Color.b = 0.0f;
 
+	m_Texture = new Texture2D("assets/textureAtlas.png");
 
 	for (size_t x = 0; x < 16; x++)
 	{
@@ -36,12 +37,18 @@ void Game::OnAttach()
 
 				if (y == 256)
 					m_Blocks[index] = Block::Air;
-				else if (y >= 100 && y <= 125)
-					m_Blocks[index] = Block::Air;
-				else if(y >= 5 && y <= 10)
-					m_Blocks[index] = Block::Air;
-				else
+				if (y == 255)
 					m_Blocks[index] = Block::Grass;
+				else if (y <= 254 && y >= 250)
+					m_Blocks[index] = Block::Dirt;
+				else if (y <= 245 && y >= 240)
+					m_Blocks[index] = Block::Air;
+				else if (y <= 238 && y >= 230)
+					m_Blocks[index] = Block::Air;
+				else if (y == 239)
+					m_Blocks[index] = Block::DiamondOre;
+				else
+					m_Blocks[index] = Block::Stone;
 			}
 		}
 	}
@@ -58,19 +65,19 @@ void Game::OnAttach()
 					continue;
 
 				if (IsAir(m_Blocks.data(), { x - 1, y, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Left), { x, y, z });
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Left, m_Blocks[index]), {x, y, z});
 				if (IsAir(m_Blocks.data(), { x + 1, y, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Right), { x, y, z });
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Right, m_Blocks[index]), { x, y, z });
 
 				if (IsAir(m_Blocks.data(), { x, y - 1, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Bottom), { x, y, z });
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Bottom, m_Blocks[index]), { x, y, z });
 				if (IsAir(m_Blocks.data(), { x, y + 1, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Top), { x, y, z });
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Top, m_Blocks[index]), { x, y, z });
 
 				if (IsAir(m_Blocks.data(), { x, y, z - 1 }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Back), { x, y, z });
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Back, m_Blocks[index]), { x, y, z });
 				if (IsAir(m_Blocks.data(), { x, y, z + 1 }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Front), { x, y, z });
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Front, m_Blocks[index]), { x, y, z });
 
 			}
 		}
@@ -144,6 +151,7 @@ void Game::OnRender()
 	m_Shader->Upload("u_View", m_Camera.GetViewMatrix());
 	m_Shader->Upload("u_Projection", m_Camera.GetProjectionMatrix());
 	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void*)0);
+	m_Texture->Use();
 	m_MeshGPU.render(m_Shader.get());
 }
 

@@ -26,7 +26,7 @@ void MeshCPU::addMeshPosition(const MeshCPU& other, const glm::vec3& pos)
 	size_t vertexOffset = vertices.size();
 
 	for (size_t i = 0; i < other.vertices.size(); i++)
-		vertices.push_back({ pos +  other.vertices[i].pos, other.vertices[i].color });
+		vertices.push_back({ pos +  other.vertices[i].pos, other.vertices[i].uv, other.vertices[i].color});
 
 	for (size_t i = 0; i < other.indices.size(); i++)
 		indices.push_back(other.indices[i] + vertexOffset);
@@ -40,6 +40,7 @@ void MeshGPU::addMeshCPU(MeshCPU* cpu)
 	vbo->Use();
 	vbo->SetLayout({
 		{Atlas::ShaderDataType::Float3, "a_Pos"},
+		{Atlas::ShaderDataType::Float2, "a_TextureUV"},
 		{Atlas::ShaderDataType::Float3, "a_Color"},
 		});
 

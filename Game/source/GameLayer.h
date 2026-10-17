@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Mesh.h"
 #include "Block.h"
+#include "Texture.h"
 
 struct Transform
 {
@@ -42,6 +43,8 @@ private:
 
 	//std::unique_ptr<Atlas::VertexArray> m_VAO;
 	std::shared_ptr<Atlas::Shader> m_Shader;
+	Texture2D* m_Texture = nullptr;
+
 	MeshCPU m_MeshCPU;
 	MeshGPU m_MeshGPU;
 
