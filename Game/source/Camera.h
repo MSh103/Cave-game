@@ -18,6 +18,8 @@ public:
 	void OnEvent(Atlas::Event& e);
 	void OnUpdate(Atlas::TimeStep ts);
 
+	float Speed = 10.f;
+
 	const glm::mat4& GetViewMatrix() const { return m_View; }
 	const glm::mat4& GetProjectionMatrix() const { return m_Projection; }
 

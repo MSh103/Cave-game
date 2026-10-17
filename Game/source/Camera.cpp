@@ -14,7 +14,7 @@ Camera::Camera(const CameraSpec& spec)
 	int width = Atlas::Application::Get().GetWindow()->GetWidth();
 	int height = Atlas::Application::Get().GetWindow()->GetHeight();
 
-	m_Projection = glm::perspective(glm::radians(m_Fov), (float)width / (float)height, 0.1f, 100.f);
+	m_Projection = glm::perspective(glm::radians(m_Fov), (float)width / (float)height, 0.1f, 300.f);
 
 	m_LastMouseY, m_LastMouseX, m_Pitch = 0.f;
 	m_Yaw = -90.f;
@@ -33,17 +33,17 @@ void Camera::OnUpdate(Atlas::TimeStep ts)
 	glm::vec3 right = glm::normalize(glm::cross(m_Direction, glm::vec3(0.f, 1.f, 0.f)));
 
 	if (Atlas::Input::IsKeyPressed(Atlas::Keyboard::Key::W))
-		m_Position += 10.f * ts * m_Direction;
+		m_Position += Speed * ts * m_Direction;
 	
 	if (Atlas::Input::IsKeyPressed(Atlas::Keyboard::Key::S))
-		m_Position -= 10.f * ts * m_Direction;
+		m_Position -= Speed * ts * m_Direction;
 
 
 	if (Atlas::Input::IsKeyPressed(Atlas::Keyboard::Key::A))
-		m_Position -= 10.f * ts * right;
+		m_Position -= Speed * ts * right;
 
 	if (Atlas::Input::IsKeyPressed(Atlas::Keyboard::Key::D))
-		m_Position += 10.f * ts * right;
+		m_Position += Speed * ts * right;
 }
 
 bool Camera::OnMouseMoved(Atlas::MouseMovedEvent& e)

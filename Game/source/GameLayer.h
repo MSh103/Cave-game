@@ -36,6 +36,8 @@ private:
 	bool m_Status = true;
 	bool m_Debug = false;
 
+	std::array<Block, 16 * 256 * 16> m_Blocks;
+
 	Camera m_Camera;
 
 	//std::unique_ptr<Atlas::VertexArray> m_VAO;

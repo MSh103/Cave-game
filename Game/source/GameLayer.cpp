@@ -2,8 +2,22 @@
 
 
 Game::Game() 
-	: Layer("GameLayer"), m_Camera({{0.f, 0.f, 0.f}, 75.f})
+	: Layer("GameLayer"), m_Camera({{16.f, 256.f, 16.f}, 75.f})
 {}
+
+bool IsAir(Block* blocks, glm::vec3 pos)
+{
+	if (pos.x < 0 || pos.x >= 16
+		|| pos.z < 0 || pos.z >= 16
+		|| pos.y < 0 || pos.y >= 256)
+		return true;
+
+	int index = pos.x + 16 * (pos.z + 16 * pos.y);
+	if (blocks[index] == Block::Air)
+		return true;
+
+	return false;
+}
 
 void Game::OnAttach()
 {
@@ -11,35 +25,54 @@ void Game::OnAttach()
 	m_Color.g = 0.0f;
 	m_Color.b = 0.0f;
 
-	Block blocks[5][5] = {
-		{Block::Grass, Block::Grass, Block::Grass, Block::Grass, Block::Grass},
-		{Block::Grass, Block::Grass, Block::Grass, Block::Grass, Block::Grass},
-		{Block::Grass, Block::Grass, Block::Grass, Block::Grass, Block::Grass},
-		{Block::Grass, Block::Grass, Block::Grass, Block::Grass, Block::Grass},
-		{Block::Grass, Block::Grass, Block::Grass, Block::Grass, Block::Grass},
-	};
 
-	for (size_t x = 0; x < 5; x++)
+	for (size_t x = 0; x < 16; x++)
 	{
-		for (size_t z = 0; z < 5; z++)
+		for (size_t z = 0; z < 16; z++)
 		{
-			Block block = blocks[x][z];
+			for (size_t y = 0; y < 256; y++)
+			{
+				int index = x + 16 * (z + 16 * y);
 
-			if (x == 0)
-				m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Left), { x, 0.f, z });
+				if (y == 256)
+					m_Blocks[index] = Block::Air;
+				else if (y >= 100 && y <= 125)
+					m_Blocks[index] = Block::Air;
+				else if(y >= 5 && y <= 10)
+					m_Blocks[index] = Block::Air;
+				else
+					m_Blocks[index] = Block::Grass;
+			}
+		}
+	}
 
-			if (x == 4)
-				m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Right), { x, 0.f, z });
+	for (size_t x = 0; x < 16; x++)
+	{
+		for (size_t z = 0; z < 16; z++)
+		{
+			for (size_t y = 0; y < 256; y++)
+			{
+				int index = x + 16 * (z + 16 * y);
 
-			if (z == 0)
-				m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Back), { x, 0.f, z });
+				if (m_Blocks[index] == Block::Air)
+					continue;
 
-			if (z == 4)
-				m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Front), { x, 0.f, z });
+				if (IsAir(m_Blocks.data(), { x - 1, y, z }))
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Left), { x, y, z });
+				if (IsAir(m_Blocks.data(), { x + 1, y, z }))
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Right), { x, y, z });
 
-			m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Top), { x, 0.f, z });
-			m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Bottom), { x, 0.f, z });
+				if (IsAir(m_Blocks.data(), { x, y - 1, z }))
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Bottom), { x, y, z });
+				if (IsAir(m_Blocks.data(), { x, y + 1, z }))
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Top), { x, y, z });
 
+				if (IsAir(m_Blocks.data(), { x, y, z - 1 }))
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Back), { x, y, z });
+				if (IsAir(m_Blocks.data(), { x, y, z + 1 }))
+					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Front), { x, y, z });
+
+			}
 		}
 	}
 
@@ -124,6 +157,7 @@ void Game::OnImGuiRender()
 	ImGui::DragFloat3("Rotation", &m_Transform.Rotation.x, 0.1f);
 	ImGui::DragFloat3("Scale", &m_Transform.Scale.x, 0.1f);
 	ImGui::Checkbox("Wireframe", &m_Debug);
+	ImGui::DragFloat("Camera Speed", &m_Camera.Speed);
 	ImGui::End();
 }
 
