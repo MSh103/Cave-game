@@ -22,7 +22,7 @@ public:
 
 	const glm::mat4& GetViewMatrix() const { return m_View; }
 	const glm::mat4& GetProjectionMatrix() const { return m_Projection; }
-
+	const glm::vec3& GetPosition() const { return m_Position; }
 private:
 	bool OnMouseMoved(Atlas::MouseMovedEvent& e);
 private:

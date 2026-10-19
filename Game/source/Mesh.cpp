@@ -32,11 +32,11 @@ void MeshCPU::addMeshPosition(const MeshCPU& other, const glm::vec3& pos)
 		indices.push_back(other.indices[i] + vertexOffset);
 }
 
-void MeshGPU::addMeshCPU(MeshCPU* cpu)
+void MeshGPU::addMeshCPU(MeshCPU& cpu)
 {
 	vertexArray = std::make_unique<Atlas::VertexArray>();
 
-	std::shared_ptr<Atlas::VertexBuffer> vbo = std::make_shared<Atlas::VertexBuffer>(cpu->vertices.data(), sizeof(Vertex) * cpu->vertices.size());
+	std::shared_ptr<Atlas::VertexBuffer> vbo = std::make_shared<Atlas::VertexBuffer>(cpu.vertices.data(), sizeof(Vertex) * cpu.vertices.size());
 	vbo->Use();
 	vbo->SetLayout({
 		{Atlas::ShaderDataType::Float3, "a_Pos"},
@@ -44,7 +44,7 @@ void MeshGPU::addMeshCPU(MeshCPU* cpu)
 		{Atlas::ShaderDataType::Float3, "a_Color"},
 		});
 
-	std::shared_ptr<Atlas::IndexBuffer> ibo = std::make_shared<Atlas::IndexBuffer>(cpu->indices.data(), cpu->indices.size());
+	std::shared_ptr<Atlas::IndexBuffer> ibo = std::make_shared<Atlas::IndexBuffer>(cpu.indices.data(), cpu.indices.size());
 	ibo->Use();
 
 	vertexArray->Use();
@@ -52,9 +52,9 @@ void MeshGPU::addMeshCPU(MeshCPU* cpu)
 	vertexArray->SetIndexBuffer(ibo);
 }
 
-void MeshGPU::render(Atlas::Shader* shader)
+void MeshGPU::render(Atlas::Shader& shader)
 {
 	vertexArray->Use();
-	shader->Use();
+	shader.Use();
 	glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, (const void*)0);
 }

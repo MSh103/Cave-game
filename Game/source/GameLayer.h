@@ -4,16 +4,10 @@
 #include <Atlas/Renderer.h>
 
 #include "Camera.h"
-#include "Mesh.h"
-#include "Block.h"
-#include "Texture.h"
 
-struct Transform
-{
-	glm::vec3 Position;
-	glm::vec3 Rotation;
-	glm::vec3 Scale;
-};
+#include "Chunk.h"
+
+#include <array>
 
 class Game : public Atlas::Layer
 {
@@ -31,13 +25,9 @@ private:
 	bool OnKeyPressed(Atlas::KeyPressedEvent e);
 private:
 	glm::vec3 m_Color;
-	Transform m_Transform;
-	glm::mat4 m_Model;
 
 	bool m_Status = true;
 	bool m_Debug = false;
-
-	std::array<Block, 16 * 256 * 16> m_Blocks;
 
 	Camera m_Camera;
 
@@ -45,7 +35,5 @@ private:
 	std::shared_ptr<Atlas::Shader> m_Shader;
 	Texture2D* m_Texture = nullptr;
 
-	MeshCPU m_MeshCPU;
-	MeshGPU m_MeshGPU;
-
+	std::array<std::array<Chunk*, 5>, 5> m_Chunks;
 };

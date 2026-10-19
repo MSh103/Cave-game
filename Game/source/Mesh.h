@@ -26,7 +26,7 @@ struct MeshGPU
 {
 	std::unique_ptr<Atlas::VertexArray> vertexArray;
 
-	void addMeshCPU(MeshCPU* cpu);
-	void render(Atlas::Shader* shader);
+	void addMeshCPU(MeshCPU& cpu);
+	void render(Atlas::Shader& shader);
 };
 

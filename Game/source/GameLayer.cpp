@@ -2,22 +2,8 @@
 
 
 Game::Game() 
-	: Layer("GameLayer"), m_Camera({{16.f, 256.f, 16.f}, 75.f})
+	: Layer("GameLayer"), m_Camera({{-10.f, 128.f, -10.f}, 75.f})
 {}
-
-bool IsAir(Block* blocks, glm::vec3 pos)
-{
-	if (pos.x < 0 || pos.x >= 16
-		|| pos.z < 0 || pos.z >= 16
-		|| pos.y < 0 || pos.y >= 256)
-		return true;
-
-	int index = pos.x + 16 * (pos.z + 16 * pos.y);
-	if (blocks[index] == Block::Air)
-		return true;
-
-	return false;
-}
 
 void Game::OnAttach()
 {
@@ -27,79 +13,22 @@ void Game::OnAttach()
 
 	m_Texture = new Texture2D("assets/textureAtlas.png");
 
-	for (size_t x = 0; x < 16; x++)
-	{
-		for (size_t z = 0; z < 16; z++)
-		{
-			for (size_t y = 0; y < 256; y++)
-			{
-				int index = x + 16 * (z + 16 * y);
-
-				if (y == 256)
-					m_Blocks[index] = Block::Air;
-				if (y == 255)
-					m_Blocks[index] = Block::Grass;
-				else if (y <= 254 && y >= 250)
-					m_Blocks[index] = Block::Dirt;
-				else if (y <= 245 && y >= 240)
-					m_Blocks[index] = Block::Air;
-				else if (y <= 238 && y >= 230)
-					m_Blocks[index] = Block::Air;
-				else if (y == 239)
-					m_Blocks[index] = Block::DiamondOre;
-				else
-					m_Blocks[index] = Block::Stone;
-			}
-		}
-	}
-
-	for (size_t x = 0; x < 16; x++)
-	{
-		for (size_t z = 0; z < 16; z++)
-		{
-			for (size_t y = 0; y < 256; y++)
-			{
-				int index = x + 16 * (z + 16 * y);
-
-				if (m_Blocks[index] == Block::Air)
-					continue;
-
-				if (IsAir(m_Blocks.data(), { x - 1, y, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Left, m_Blocks[index]), {x, y, z});
-				if (IsAir(m_Blocks.data(), { x + 1, y, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Right, m_Blocks[index]), { x, y, z });
-
-				if (IsAir(m_Blocks.data(), { x, y - 1, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Bottom, m_Blocks[index]), { x, y, z });
-				if (IsAir(m_Blocks.data(), { x, y + 1, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Top, m_Blocks[index]), { x, y, z });
-
-				if (IsAir(m_Blocks.data(), { x, y, z - 1 }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Back, m_Blocks[index]), { x, y, z });
-				if (IsAir(m_Blocks.data(), { x, y, z + 1 }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Front, m_Blocks[index]), { x, y, z });
-
-			}
-		}
-	}
-
-
-	m_MeshGPU.addMeshCPU(&m_MeshCPU);
-
-
 
 	m_Shader = std::make_shared<Atlas::Shader>();
 	m_Shader->LoadFromFile(Atlas::ShaderType::Vertex, "assets/Vertex.glsl");
 	m_Shader->LoadFromFile(Atlas::ShaderType::Fragment, "assets/Fragment.glsl");
 	m_Shader->LinkObjectsToProgram();
 
-	
+	for (size_t x = 0; x < 5; x++)
+	{
+		for (size_t y = 0; y < 5; y++)
+		{
+			m_Chunks[y][x] = new Chunk({ x, y });
+			m_Chunks[y][x]->Generate();
+			m_Chunks[y][x]->BuildMesh();
+		}
+	}
 
-	m_Transform.Position = { 0.f, 0.f, 0.f };
-	m_Transform.Rotation = { 0.f, 0.f, 0.f };
-	m_Transform.Scale = { 1.f, 1.f, 1.f };
-
-	m_Model = glm::mat4(1.0f);
 }
 
 void Game::OnDetach()
@@ -122,12 +51,6 @@ void Game::OnUpdate(Atlas::TimeStep ts)
 
 	//m_Transform.Rotation.y += 1.5f * ts;
 	//m_Transform.Rotation.z += 1.5f * ts;
-
-	m_Model = glm::translate(glm::mat4(1.0f), m_Transform.Position) *
-		glm::rotate(glm::mat4(1.0f), m_Transform.Rotation.x, glm::vec3(1.f, 0.f, 0.f)) *
-		glm::rotate(glm::mat4(1.0f), m_Transform.Rotation.y, glm::vec3(0.f, 1.f, 0.f)) *
-		glm::rotate(glm::mat4(1.0f), m_Transform.Rotation.z, glm::vec3(0.f, 0.f, 1.f)) *
-		glm::scale(glm::mat4(1.0f), m_Transform.Scale);
 }
 
 void Game::OnRender()
@@ -145,14 +68,9 @@ void Game::OnRender()
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 
-	//m_VAO->Use();
-	m_Shader->Use();
-	m_Shader->Upload("u_Model", m_Model);
-	m_Shader->Upload("u_View", m_Camera.GetViewMatrix());
-	m_Shader->Upload("u_Projection", m_Camera.GetProjectionMatrix());
-	//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, (const void*)0);
-	m_Texture->Use();
-	m_MeshGPU.render(m_Shader.get());
+	for (size_t i = 0; i < 5; i++)
+		for(size_t j = 0; j < 5; j++)
+			m_Chunks[i][j]->Render(m_Camera, *m_Texture, *m_Shader);
 }
 
 void Game::OnImGuiRender()
@@ -161,11 +79,12 @@ void Game::OnImGuiRender()
 	ImGui::ColorEdit3("Clear Screen", glm::value_ptr(m_Color));
 	ImGui::Separator();
 	ImGui::Text("Transform");
-	ImGui::DragFloat3("Position", &m_Transform.Position.x, 0.1f);
-	ImGui::DragFloat3("Rotation", &m_Transform.Rotation.x, 0.1f);
-	ImGui::DragFloat3("Scale", &m_Transform.Scale.x, 0.1f);
+	//ImGui::DragFloat3("Position", &m_Transform.Position.x, 0.1f);
+	//ImGui::DragFloat3("Rotation", &m_Transform.Rotation.x, 0.1f);
+	//ImGui::DragFloat3("Scale", &m_Transform.Scale.x, 0.1f);
 	ImGui::Checkbox("Wireframe", &m_Debug);
 	ImGui::DragFloat("Camera Speed", &m_Camera.Speed);
+	ImGui::Text("Camera Position: %.2f, %.2f, %.2f", m_Camera.GetPosition().x, m_Camera.GetPosition().y, m_Camera.GetPosition().z);
 	ImGui::End();
 }
 
