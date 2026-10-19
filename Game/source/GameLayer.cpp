@@ -33,7 +33,7 @@ void Game::OnAttach()
 
 void Game::OnDetach()
 {
-
+	delete m_Texture;
 }
 
 void Game::OnEvent(Atlas::Event& e)

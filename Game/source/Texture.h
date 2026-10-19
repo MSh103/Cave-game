@@ -7,6 +7,7 @@ class Texture2D
 {
 public:
 	Texture2D(const std::filesystem::path& path);
+	~Texture2D();
 
 	void Use();
 

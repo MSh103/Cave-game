@@ -38,6 +38,11 @@ Texture2D::Texture2D(const std::filesystem::path& path)
 	Atlas::Log::Core::Trace("Created texture: {}x{}, {}", m_Image.width, m_Image.height, m_FilePath.string());
 }
 
+Texture2D::~Texture2D()
+{
+	GLCall(glDeleteTextures(1, &m_RendererID));
+}
+
 void Texture2D::Use()
 {
 	GLCall(glBindTexture(GL_TEXTURE_2D, m_RendererID));
