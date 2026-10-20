@@ -26,6 +26,7 @@ public:
 
 	void Generate();
 	void BuildMesh();
+	void UploadMesh();
 
 	void Render(Camera& camera, Texture2D& atlas, Atlas::Shader& shader);
 

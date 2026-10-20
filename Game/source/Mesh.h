@@ -3,6 +3,7 @@
 #include <Atlas.h>
 #include <Atlas/Renderer.h>
 
+#include "Block.h"
 
 struct Vertex
 {
@@ -20,6 +21,7 @@ struct MeshCPU
 	void pushIndex(const uint32_t& index);
 	void addMesh(const MeshCPU& other);
 	void addMeshPosition(const MeshCPU& other, const glm::vec3& pos);
+	void addFace(BlockFace face, Block block, const glm::vec3& pos);
 };
 
 struct MeshGPU

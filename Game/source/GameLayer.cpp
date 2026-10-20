@@ -26,6 +26,7 @@ void Game::OnAttach()
 			m_Chunks[y][x] = new Chunk({ x, y });
 			m_Chunks[y][x]->Generate();
 			m_Chunks[y][x]->BuildMesh();
+			m_Chunks[y][x]->UploadMesh();
 		}
 	}
 

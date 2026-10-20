@@ -2,6 +2,8 @@
 
 #include "Camera.h"
 
+#include "Debug/Timer.h"
+
 Chunk::Chunk(glm::vec2 pos)
 {
 	m_Position = pos;
@@ -11,6 +13,8 @@ Chunk::Chunk(glm::vec2 pos)
 
 void Chunk::Generate()
 {
+	ScopedTimer timer("Chunk::Generate()");
+
 	for (size_t x = 0; x < CHUNK_WIDTH; x++)
 	{
 		for (size_t z = 0; z < CHUNK_DEPTH; z++)
@@ -38,6 +42,11 @@ void Chunk::Generate()
 
 void Chunk::BuildMesh()
 {
+	ScopedTimer timer("Chunk::BuildMesh()");
+
+	m_MeshCPU.vertices.reserve(70000);
+	m_MeshCPU.indices.reserve(105000);
+
 	for (size_t x = 0; x < CHUNK_WIDTH; x++)
 	{
 		for (size_t z = 0; z < CHUNK_DEPTH; z++)
@@ -50,24 +59,29 @@ void Chunk::BuildMesh()
 					continue;
 
 				if (IsAir(m_Blocks.data(), { x - 1, y, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Left, m_Blocks[index]), { x, y, z });
+					m_MeshCPU.addFace(BlockFace::Left, m_Blocks[index], { x, y, z });
 				if (IsAir(m_Blocks.data(), { x + 1, y, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Right, m_Blocks[index]), { x, y, z });
+					m_MeshCPU.addFace(BlockFace::Right, m_Blocks[index], { x, y, z });
 
 				if (IsAir(m_Blocks.data(), { x, y - 1, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Bottom, m_Blocks[index]), { x, y, z });
+					m_MeshCPU.addFace(BlockFace::Bottom, m_Blocks[index], { x, y, z });
 				if (IsAir(m_Blocks.data(), { x, y + 1, z }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Top, m_Blocks[index]), { x, y, z });
+					m_MeshCPU.addFace(BlockFace::Top, m_Blocks[index], { x, y, z });
 
 				if (IsAir(m_Blocks.data(), { x, y, z - 1 }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Back, m_Blocks[index]), { x, y, z });
+					m_MeshCPU.addFace(BlockFace::Back, m_Blocks[index], { x, y, z });
 				if (IsAir(m_Blocks.data(), { x, y, z + 1 }))
-					m_MeshCPU.addMeshPosition(getBlockFace(BlockFace::Front, m_Blocks[index]), { x, y, z });
+					m_MeshCPU.addFace(BlockFace::Front, m_Blocks[index], { x, y, z });
 			}
 		}
 	}
 
+	Atlas::Log::Core::Trace("VertSize: {}, IndicesSize: {}, VertCapacity: {}, IndicesCapacity: {}", m_MeshCPU.vertices.size(), m_MeshCPU.indices.size(), m_MeshCPU.vertices.capacity(), m_MeshCPU.indices.capacity());
+}
 
+void Chunk::UploadMesh()
+{
+	ScopedTimer timer("Chunk::UploadMesh()");
 	m_MeshGPU.addMeshCPU(m_MeshCPU);
 }
 

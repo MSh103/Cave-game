@@ -3,7 +3,7 @@
 #include <Atlas.h>
 #include <Atlas/Renderer.h>
 
-struct MeshCPU;
+//struct MeshCPU;
 
 enum class Block : int
 {
@@ -24,4 +24,5 @@ enum class BlockFace : int
 	Back = 5,
 };
 
-MeshCPU getBlockFace(const BlockFace& face, Block block);
+std::array<glm::vec2, 2> getAtlasTile(Block block, BlockFace face);
+//MeshCPU getBlockFace(const BlockFace& face, Block block);
