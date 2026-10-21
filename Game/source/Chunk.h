@@ -31,7 +31,7 @@ public:
 	void Render(Camera& camera, Texture2D& atlas, Atlas::Shader& shader);
 
 private:
-	bool IsAir(Block* blocks, glm::vec3 pos);
+	bool IsAir(Block* blocks, glm::ivec3 pos);
 
 private:
 	std::array<Block, CHUNK_WIDTH* CHUNK_DEPTH* CHUNK_HEIGHT> m_Blocks;

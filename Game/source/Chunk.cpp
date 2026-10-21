@@ -38,22 +38,25 @@ void Chunk::Generate()
 			}
 		}
 	}
+
+	
+	m_MeshCPU.vertices.reserve(70000);
+	m_MeshCPU.indices.reserve(105000);
 }
 
 void Chunk::BuildMesh()
 {
 	ScopedTimer timer("Chunk::BuildMesh()");
 
-	m_MeshCPU.vertices.reserve(70000);
-	m_MeshCPU.indices.reserve(105000);
+	m_MeshCPU.ClearMesh();
 
-	for (size_t x = 0; x < CHUNK_WIDTH; x++)
+	for (int y = 0; y < CHUNK_HEIGHT; y++)
 	{
-		for (size_t z = 0; z < CHUNK_DEPTH; z++)
+		for (int z = 0; z < CHUNK_DEPTH; z++)
 		{
-			for (size_t y = 0; y < CHUNK_HEIGHT; y++)
+			for (int x = 0; x < CHUNK_WIDTH; x++)
 			{
-				int index = x + CHUNK_WIDTH * (z + CHUNK_DEPTH* y);
+				const int index = x + CHUNK_WIDTH * (z + CHUNK_DEPTH* y);
 
 				if (m_Blocks[index] == Block::Air)
 					continue;
@@ -95,7 +98,7 @@ void Chunk::Render(Camera& camera, Texture2D& atlas, Atlas::Shader& shader)
 	m_MeshGPU.render(shader);
 }
 
-bool Chunk::IsAir(Block* blocks, glm::vec3 pos)
+bool Chunk::IsAir(Block* blocks, glm::ivec3 pos)
 {
 	if (pos.x < 0 || pos.x >= 16
 		|| pos.z < 0 || pos.z >= 16

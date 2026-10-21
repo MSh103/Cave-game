@@ -26,7 +26,7 @@ void MeshCPU::addMeshPosition(const MeshCPU& other, const glm::vec3& pos)
 	size_t vertexOffset = vertices.size();
 
 	for (size_t i = 0; i < other.vertices.size(); i++)
-		vertices.push_back({ pos +  other.vertices[i].pos, other.vertices[i].uv, other.vertices[i].color});
+		vertices.push_back({ pos +  other.vertices[i].pos, other.vertices[i].uv, other.vertices[i].brightness});
 
 	for (size_t i = 0; i < other.indices.size(); i++)
 		indices.push_back(other.indices[i] + vertexOffset);
@@ -41,89 +41,64 @@ void MeshCPU::addFace(BlockFace face, Block block, const glm::vec3& pos)
 	{
 	case BlockFace::Front:
 	{
-		vertices.push_back({ glm::vec3(-0.5f, 0.5f, 0.5f) + pos, { uvMin.x, uvMin.y }, glm::vec3(0.9f) });
-		vertices.push_back({ glm::vec3(-0.5f,-0.5f, 0.5f) + pos, { uvMin.x, uvMax.y }, glm::vec3(0.9f) });
-		vertices.push_back({ glm::vec3(0.5f,-0.5f, 0.5f) + pos, { uvMax.x, uvMax.y }, glm::vec3(0.9f) });
-		vertices.push_back({ glm::vec3(0.5f, 0.5f, 0.5f) + pos, { uvMax.x, uvMin.y }, glm::vec3(0.9f) });
-		indices.push_back(baseIndex + 0);
-		indices.push_back(baseIndex + 1);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 3);
-		indices.push_back(baseIndex + 0);
+		vertices.push_back({ glm::vec3(-0.5f, 0.5f, 0.5f) + pos, { uvMin.x, uvMin.y }, 229 });
+		vertices.push_back({ glm::vec3(-0.5f,-0.5f, 0.5f) + pos, { uvMin.x, uvMax.y }, 229 });
+		vertices.push_back({ glm::vec3( 0.5f,-0.5f, 0.5f) + pos, { uvMax.x, uvMax.y }, 229 });
+		vertices.push_back({ glm::vec3( 0.5f, 0.5f, 0.5f) + pos, { uvMax.x, uvMin.y }, 229 });
 		break;
 	}
 	case BlockFace::Top:
 	{
-		vertices.push_back({glm::vec3( 0.5f, 0.5f, 0.5f) + pos, { uvMin.x, uvMin.y }, glm::vec3(1.f)});
-		vertices.push_back({glm::vec3( 0.5f, 0.5f,-0.5f) + pos, { uvMin.x, uvMax.y }, glm::vec3(1.f)});
-		vertices.push_back({glm::vec3(-0.5f, 0.5f,-0.5f) + pos, { uvMax.x, uvMax.y }, glm::vec3(1.f)});
-		vertices.push_back({glm::vec3(-0.5f, 0.5f, 0.5f) + pos, { uvMax.x, uvMin.y }, glm::vec3(1.f)});
-		indices.push_back(baseIndex + 0);
-		indices.push_back(baseIndex + 1);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 3);
-		indices.push_back(baseIndex + 0);
+		vertices.push_back({ glm::vec3( 0.5f, 0.5f, 0.5f) + pos, { uvMin.x, uvMin.y }, 255 });
+		vertices.push_back({ glm::vec3( 0.5f, 0.5f,-0.5f) + pos, { uvMin.x, uvMax.y }, 255 });
+		vertices.push_back({ glm::vec3(-0.5f, 0.5f,-0.5f) + pos, { uvMax.x, uvMax.y }, 255 });
+		vertices.push_back({ glm::vec3(-0.5f, 0.5f, 0.5f) + pos, { uvMax.x, uvMin.y }, 255 });
 		break;
 	}
 	case BlockFace::Back:
 	{
-		vertices.push_back({ glm::vec3( 0.5f, 0.5f,-0.5f) + pos, { uvMin.x, uvMin.y }, glm::vec3(0.6f) });
-		vertices.push_back({ glm::vec3( 0.5f,-0.5f,-0.5f) + pos, { uvMin.x, uvMax.y }, glm::vec3(0.6f) });
-		vertices.push_back({ glm::vec3(-0.5f,-0.5f,-0.5f) + pos, { uvMax.x, uvMax.y }, glm::vec3(0.6f) });
-		vertices.push_back({ glm::vec3(-0.5f, 0.5f,-0.5f) + pos, { uvMax.x, uvMin.y }, glm::vec3(0.6f) });
-		indices.push_back(baseIndex + 0);
-		indices.push_back(baseIndex + 1);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 3);
-		indices.push_back(baseIndex + 0);
+		vertices.push_back({ glm::vec3( 0.5f, 0.5f,-0.5f) + pos, { uvMin.x, uvMin.y }, 153 });
+		vertices.push_back({ glm::vec3( 0.5f,-0.5f,-0.5f) + pos, { uvMin.x, uvMax.y }, 153 });
+		vertices.push_back({ glm::vec3(-0.5f,-0.5f,-0.5f) + pos, { uvMax.x, uvMax.y }, 153 });
+		vertices.push_back({ glm::vec3(-0.5f, 0.5f,-0.5f) + pos, { uvMax.x, uvMin.y }, 153 });
 		break;
 	}
 	case BlockFace::Bottom:
 	{
-		vertices.push_back({glm::vec3(-0.5f,-0.5f, 0.5f) + pos, { uvMin.x, uvMin.y }, glm::vec3(0.5f)});
-		vertices.push_back({glm::vec3(-0.5f,-0.5f,-0.5f) + pos, { uvMin.x, uvMax.y }, glm::vec3(0.5f)});
-		vertices.push_back({glm::vec3( 0.5f,-0.5f,-0.5f) + pos, { uvMax.x, uvMax.y }, glm::vec3(0.5f)});
-		vertices.push_back({glm::vec3( 0.5f,-0.5f, 0.5f) + pos, { uvMax.x, uvMin.y }, glm::vec3(0.5f)});
-		indices.push_back(baseIndex + 0);
-		indices.push_back(baseIndex + 1);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 3);
-		indices.push_back(baseIndex + 0);
+		vertices.push_back({ glm::vec3(-0.5f,-0.5f, 0.5f) + pos, { uvMin.x, uvMin.y }, 128 });
+		vertices.push_back({ glm::vec3(-0.5f,-0.5f,-0.5f) + pos, { uvMin.x, uvMax.y }, 128 });
+		vertices.push_back({ glm::vec3( 0.5f,-0.5f,-0.5f) + pos, { uvMax.x, uvMax.y }, 128 });
+		vertices.push_back({ glm::vec3( 0.5f,-0.5f, 0.5f) + pos, { uvMax.x, uvMin.y }, 128 });
 		break;
 	}
 	case BlockFace::Left:
 	{
-		vertices.push_back({ glm::vec3(-0.5f, 0.5f,-0.5f) + pos, { uvMin.x, uvMin.y }, glm::vec3(0.7f) });
-		vertices.push_back({ glm::vec3(-0.5f,-0.5f,-0.5f) + pos, { uvMin.x, uvMax.y }, glm::vec3(0.7f) });
-		vertices.push_back({ glm::vec3(-0.5f,-0.5f, 0.5f) + pos, { uvMax.x, uvMax.y }, glm::vec3(0.7f) });
-		vertices.push_back({ glm::vec3(-0.5f, 0.5f, 0.5f) + pos, { uvMax.x, uvMin.y }, glm::vec3(0.7f) });
-		indices.push_back(baseIndex + 0);
-		indices.push_back(baseIndex + 1);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 3);
-		indices.push_back(baseIndex + 0);
+		vertices.push_back({ glm::vec3(-0.5f, 0.5f,-0.5f) + pos, { uvMin.x, uvMin.y }, 178 });
+		vertices.push_back({ glm::vec3(-0.5f,-0.5f,-0.5f) + pos, { uvMin.x, uvMax.y }, 178 });
+		vertices.push_back({ glm::vec3(-0.5f,-0.5f, 0.5f) + pos, { uvMax.x, uvMax.y }, 178 });
+		vertices.push_back({ glm::vec3(-0.5f, 0.5f, 0.5f) + pos, { uvMax.x, uvMin.y }, 178 });
 		break;
 	}
 	case BlockFace::Right:
 	{
-		vertices.push_back({ glm::vec3(0.5f, 0.5f, 0.5f) + pos, { uvMin.x, uvMin.y }, glm::vec3(0.8f) });
-		vertices.push_back({ glm::vec3(0.5f,-0.5f, 0.5f) + pos, { uvMin.x, uvMax.y }, glm::vec3(0.8f) });
-		vertices.push_back({ glm::vec3(0.5f,-0.5f,-0.5f) + pos, { uvMax.x, uvMax.y }, glm::vec3(0.8f) });
-		vertices.push_back({ glm::vec3(0.5f, 0.5f,-0.5f) + pos, { uvMax.x, uvMin.y }, glm::vec3(0.8f) });
-		indices.push_back(baseIndex + 0);
-		indices.push_back(baseIndex + 1);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 2);
-		indices.push_back(baseIndex + 3);
-		indices.push_back(baseIndex + 0);
+		vertices.push_back({ glm::vec3(0.5f, 0.5f, 0.5f) + pos, { uvMin.x, uvMin.y }, 204 });
+		vertices.push_back({ glm::vec3(0.5f,-0.5f, 0.5f) + pos, { uvMin.x, uvMax.y }, 204 });
+		vertices.push_back({ glm::vec3(0.5f,-0.5f,-0.5f) + pos, { uvMax.x, uvMax.y }, 204 });
+		vertices.push_back({ glm::vec3(0.5f, 0.5f,-0.5f) + pos, { uvMax.x, uvMin.y }, 204 });
 		break;
 	}
 	}
+
+	uint32_t faceIndices[] = { 0, 1, 2, 2, 3, 0 };
+
+	for(size_t i = 0; i < 6; i++)
+		indices.push_back(baseIndex + faceIndices[i]);
+}
+
+void MeshCPU::ClearMesh()
+{
+	vertices.clear();
+	indices.clear();
 }
 
 void MeshGPU::addMeshCPU(MeshCPU& cpu)
@@ -133,9 +108,9 @@ void MeshGPU::addMeshCPU(MeshCPU& cpu)
 	std::shared_ptr<Atlas::VertexBuffer> vbo = std::make_shared<Atlas::VertexBuffer>(cpu.vertices.data(), sizeof(Vertex) * cpu.vertices.size());
 	vbo->Use();
 	vbo->SetLayout({
-		{Atlas::ShaderDataType::Float3, "a_Pos"},
+		{Atlas::ShaderDataType::Float3, "a_Pos", },
 		{Atlas::ShaderDataType::Float2, "a_TextureUV"},
-		{Atlas::ShaderDataType::Float3, "a_Color"},
+		{Atlas::ShaderDataType::Float, "a_Brightness", true},
 		});
 
 	std::shared_ptr<Atlas::IndexBuffer> ibo = std::make_shared<Atlas::IndexBuffer>(cpu.indices.data(), cpu.indices.size());

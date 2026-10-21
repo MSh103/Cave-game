@@ -77,115 +77,115 @@ std::array<glm::vec2, 2> getAtlasTile(Block block, BlockFace face)
 	return { glm::vec2(0.f), glm::vec2(0.f) };
 }
 
-
-MeshCPU getBlockFace(const BlockFace& face, Block block)
-{
-	switch (face)
-	{
-		case BlockFace::Front:
-		{
-			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Front);
-
-			return {
-				{
-					{{-0.5f, 0.5f, 0.5f }, { uvMin.x, uvMin.y }, glm::vec3(0.9f)}, // FTL	
-					{{-0.5f,-0.5f, 0.5f }, { uvMin.x, uvMax.y }, glm::vec3(0.9f)}, // FBL	
-					{{ 0.5f,-0.5f, 0.5f }, { uvMax.x, uvMax.y }, glm::vec3(0.9f)}, // FBR	
-					{{ 0.5f, 0.5f, 0.5f }, { uvMax.x, uvMin.y }, glm::vec3(0.9f)}, // FTR
-				},
-				{
-					///   TR->BR->BL      BL->TL->TR 
-						0, 1, 2,	2, 3, 0
-				}
-			}; break;
-		}
-		case BlockFace::Top:
-		{
-			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Top);
-
-			return {
-				{
-					{{ 0.5f, 0.5f, 0.5f }, { uvMin.x, uvMin.y }, glm::vec3(1.f)}, // TTR
-					{{ 0.5f, 0.5f,-0.5f }, { uvMin.x, uvMax.y }, glm::vec3(1.f)}, // TBR
-					{{-0.5f, 0.5f,-0.5f }, { uvMax.x, uvMax.y }, glm::vec3(1.f)}, // TBL
-					{{-0.5f, 0.5f, 0.5f }, { uvMax.x, uvMin.y }, glm::vec3(1.f)}, // TTL
-				},
-				{
-					///   TR->BR->BL      BL->TL->TR 
-						0, 1, 2,	2, 3, 0
-				}
-			}; break;
-		}
-		case BlockFace::Back:
-		{
-			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Back);
-
-			return {
-				{
-					{{ 0.5f, 0.5f,-0.5f }, { uvMin.x, uvMin.y }, glm::vec3(0.6f)}, // BTR
-					{{ 0.5f,-0.5f,-0.5f }, { uvMin.x, uvMax.y }, glm::vec3(0.6f)}, // BBR
-					{{-0.5f,-0.5f,-0.5f }, { uvMax.x, uvMax.y }, glm::vec3(0.6f)}, // BBL
-					{{-0.5f, 0.5f,-0.5f }, { uvMax.x, uvMin.y }, glm::vec3(0.6f)}, // BTL
-				},
-				{
-					///   TR->BR->BL      BL->TL->TR 
-						0, 1, 2,	2, 3, 0
-				}
-			}; break;
-		}
-		case BlockFace::Bottom:
-		{
-			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Bottom);
-
-			return {
-				{
-					{{-0.5f,-0.5f, 0.5f }, { uvMin.x, uvMin.y }, glm::vec3(0.5f)}, // TTL
-					{{-0.5f,-0.5f,-0.5f }, { uvMin.x, uvMax.y }, glm::vec3(0.5f)}, // TBL
-					{{ 0.5f,-0.5f,-0.5f }, { uvMax.x, uvMax.y }, glm::vec3(0.5f)}, // TBR
-					{{ 0.5f,-0.5f, 0.5f }, { uvMax.x, uvMin.y }, glm::vec3(0.5f)}, // TTR
-				},
-				{
-					///   TR->BR->BL      BL->TL->TR 
-						0, 1, 2,	2, 3, 0
-				}
-			}; break;
-		}
-		case BlockFace::Left:
-		{
-			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Left);
-
-			return {
-				{
-					{{-0.5f, 0.5f,-0.5f }, { uvMin.x, uvMin.y }, glm::vec3(0.7f)}, // TTL
-					{{-0.5f,-0.5f,-0.5f }, { uvMin.x, uvMax.y }, glm::vec3(0.7f)}, // TBL
-					{{-0.5f,-0.5f, 0.5f }, { uvMax.x, uvMax.y }, glm::vec3(0.7f)}, // TBR
-					{{-0.5f, 0.5f, 0.5f }, { uvMax.x, uvMin.y }, glm::vec3(0.7f)}, // TTR
-				},
-				{
-					///   TR->BR->BL      BL->TL->TR 
-						0, 1, 2,	2, 3, 0
-				}
-			}; break;
-		}
-		case BlockFace::Right:
-		{
-			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Right);
-
-			return {
-				{
-					{{ 0.5f, 0.5f, 0.5f }, { uvMin.x, uvMin.y }, glm::vec3(0.8f)}, // TTR		   
-					{{ 0.5f,-0.5f, 0.5f }, { uvMin.x, uvMax.y }, glm::vec3(0.8f)}, // TBR		   
-					{{ 0.5f,-0.5f,-0.5f }, { uvMax.x, uvMax.y }, glm::vec3(0.8f)}, // TBL		   
-					{{ 0.5f, 0.5f,-0.5f }, { uvMax.x, uvMin.y }, glm::vec3(0.8f)}, // TTL
-				},
-				{
-					///   TR->BR->BL      BL->TL->TR 
-						0, 1, 2,	2, 3, 0
-				}
-			}; break;
-		}
-	}
-
-
-	return {};
-}
+//
+//MeshCPU getBlockFace(const BlockFace& face, Block block)
+//{
+//	switch (face)
+//	{
+//		case BlockFace::Front:
+//		{
+//			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Front);
+//
+//			return {
+//				{
+//					{{-0.5f, 0.5f, 0.5f }, { uvMin.x, uvMin.y }, glm::vec3(0.9f)}, // FTL	
+//					{{-0.5f,-0.5f, 0.5f }, { uvMin.x, uvMax.y }, glm::vec3(0.9f)}, // FBL	
+//					{{ 0.5f,-0.5f, 0.5f }, { uvMax.x, uvMax.y }, glm::vec3(0.9f)}, // FBR	
+//					{{ 0.5f, 0.5f, 0.5f }, { uvMax.x, uvMin.y }, glm::vec3(0.9f)}, // FTR
+//				},
+//				{
+//					///   TR->BR->BL      BL->TL->TR 
+//						0, 1, 2,	2, 3, 0
+//				}
+//			}; break;
+//		}
+//		case BlockFace::Top:
+//		{
+//			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Top);
+//
+//			return {
+//				{
+//					{{ 0.5f, 0.5f, 0.5f }, { uvMin.x, uvMin.y }, glm::vec3(1.f)}, // TTR
+//					{{ 0.5f, 0.5f,-0.5f }, { uvMin.x, uvMax.y }, glm::vec3(1.f)}, // TBR
+//					{{-0.5f, 0.5f,-0.5f }, { uvMax.x, uvMax.y }, glm::vec3(1.f)}, // TBL
+//					{{-0.5f, 0.5f, 0.5f }, { uvMax.x, uvMin.y }, glm::vec3(1.f)}, // TTL
+//				},
+//				{
+//					///   TR->BR->BL      BL->TL->TR 
+//						0, 1, 2,	2, 3, 0
+//				}
+//			}; break;
+//		}
+//		case BlockFace::Back:
+//		{
+//			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Back);
+//
+//			return {
+//				{
+//					{{ 0.5f, 0.5f,-0.5f }, { uvMin.x, uvMin.y }, glm::vec3(0.6f)}, // BTR
+//					{{ 0.5f,-0.5f,-0.5f }, { uvMin.x, uvMax.y }, glm::vec3(0.6f)}, // BBR
+//					{{-0.5f,-0.5f,-0.5f }, { uvMax.x, uvMax.y }, glm::vec3(0.6f)}, // BBL
+//					{{-0.5f, 0.5f,-0.5f }, { uvMax.x, uvMin.y }, glm::vec3(0.6f)}, // BTL
+//				},
+//				{
+//					///   TR->BR->BL      BL->TL->TR 
+//						0, 1, 2,	2, 3, 0
+//				}
+//			}; break;
+//		}
+//		case BlockFace::Bottom:
+//		{
+//			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Bottom);
+//
+//			return {
+//				{
+//					{{-0.5f,-0.5f, 0.5f }, { uvMin.x, uvMin.y }, glm::vec3(0.5f)}, // TTL
+//					{{-0.5f,-0.5f,-0.5f }, { uvMin.x, uvMax.y }, glm::vec3(0.5f)}, // TBL
+//					{{ 0.5f,-0.5f,-0.5f }, { uvMax.x, uvMax.y }, glm::vec3(0.5f)}, // TBR
+//					{{ 0.5f,-0.5f, 0.5f }, { uvMax.x, uvMin.y }, glm::vec3(0.5f)}, // TTR
+//				},
+//				{
+//					///   TR->BR->BL      BL->TL->TR 
+//						0, 1, 2,	2, 3, 0
+//				}
+//			}; break;
+//		}
+//		case BlockFace::Left:
+//		{
+//			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Left);
+//
+//			return {
+//				{
+//					{{-0.5f, 0.5f,-0.5f }, { uvMin.x, uvMin.y }, glm::vec3(0.7f)}, // TTL
+//					{{-0.5f,-0.5f,-0.5f }, { uvMin.x, uvMax.y }, glm::vec3(0.7f)}, // TBL
+//					{{-0.5f,-0.5f, 0.5f }, { uvMax.x, uvMax.y }, glm::vec3(0.7f)}, // TBR
+//					{{-0.5f, 0.5f, 0.5f }, { uvMax.x, uvMin.y }, glm::vec3(0.7f)}, // TTR
+//				},
+//				{
+//					///   TR->BR->BL      BL->TL->TR 
+//						0, 1, 2,	2, 3, 0
+//				}
+//			}; break;
+//		}
+//		case BlockFace::Right:
+//		{
+//			auto [uvMin, uvMax] = getAtlasTile(block, BlockFace::Right);
+//
+//			return {
+//				{
+//					{{ 0.5f, 0.5f, 0.5f }, { uvMin.x, uvMin.y }, glm::vec3(0.8f)}, // TTR		   
+//					{{ 0.5f,-0.5f, 0.5f }, { uvMin.x, uvMax.y }, glm::vec3(0.8f)}, // TBR		   
+//					{{ 0.5f,-0.5f,-0.5f }, { uvMax.x, uvMax.y }, glm::vec3(0.8f)}, // TBL		   
+//					{{ 0.5f, 0.5f,-0.5f }, { uvMax.x, uvMin.y }, glm::vec3(0.8f)}, // TTL
+//				},
+//				{
+//					///   TR->BR->BL      BL->TL->TR 
+//						0, 1, 2,	2, 3, 0
+//				}
+//			}; break;
+//		}
+//	}
+//
+//
+//	return {};
+//}

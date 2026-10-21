@@ -9,7 +9,7 @@ struct Vertex
 {
 	glm::vec3 pos;
 	glm::vec2 uv;
-	glm::vec3 color;
+	float brightness;
 };
 
 struct MeshCPU
@@ -22,6 +22,8 @@ struct MeshCPU
 	void addMesh(const MeshCPU& other);
 	void addMeshPosition(const MeshCPU& other, const glm::vec3& pos);
 	void addFace(BlockFace face, Block block, const glm::vec3& pos);
+
+	void ClearMesh();
 };
 
 struct MeshGPU
