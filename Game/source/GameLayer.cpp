@@ -2,7 +2,7 @@
 
 
 Game::Game() 
-	: Layer("GameLayer"), m_Camera({{-10.f, 128.f, -10.f}, 75.f})
+	: Layer("GameLayer"), m_Camera({{-10.f, 0.f, -10.f}, 75.f})
 {}
 
 void Game::OnAttach()
@@ -18,18 +18,6 @@ void Game::OnAttach()
 	m_Shader->LoadFromFile(Atlas::ShaderType::Vertex, "assets/Vertex.glsl");
 	m_Shader->LoadFromFile(Atlas::ShaderType::Fragment, "assets/Fragment.glsl");
 	m_Shader->LinkObjectsToProgram();
-
-	for (size_t x = 0; x < 5; x++)
-	{
-		for (size_t y = 0; y < 5; y++)
-		{
-			m_Chunks[y][x] = new Chunk({ x, y });
-			m_Chunks[y][x]->Generate();
-			m_Chunks[y][x]->BuildMesh();
-			m_Chunks[y][x]->UploadMesh();
-		}
-	}
-
 }
 
 void Game::OnDetach()
@@ -68,10 +56,7 @@ void Game::OnRender()
 	else
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-
-	for (size_t i = 0; i < 5; i++)
-		for(size_t j = 0; j < 5; j++)
-			m_Chunks[i][j]->Render(m_Camera, *m_Texture, *m_Shader);
+	m_World.Render(m_Camera, *m_Texture, *m_Shader);
 }
 
 void Game::OnImGuiRender()
@@ -102,6 +87,13 @@ bool Game::OnKeyPressed(Atlas::KeyPressedEvent e)
 		Atlas::Application::Get().Close();
 		return true;
 	}
+
+	//if(e.GetKeyCode() == Atlas::Keyboard::Key::F9)
+	//{
+	//	Atlas::Log::Trace("Rebuilding Mesh...");
+	//	m_Chunk->BuildMesh();
+	//	return true;
+	//}
 
 	return false;
 }

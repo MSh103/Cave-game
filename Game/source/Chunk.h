@@ -15,13 +15,13 @@ class Camera;
 
 static constexpr std::size_t CHUNK_WIDTH  = 16;
 static constexpr std::size_t CHUNK_DEPTH  = 16;
-static constexpr std::size_t CHUNK_HEIGHT = 256;
+static constexpr std::size_t CHUNK_HEIGHT = 16;
 
 
 class Chunk
 {
 public:
-	Chunk(glm::vec2 pos);
+	Chunk(glm::vec3 pos);
 	~Chunk() = default;
 
 	void Generate();
@@ -31,12 +31,13 @@ public:
 	void Render(Camera& camera, Texture2D& atlas, Atlas::Shader& shader);
 
 private:
-	bool IsAir(Block* blocks, glm::ivec3 pos);
+	bool IsAir(glm::ivec3 pos);
 
 private:
-	std::array<Block, CHUNK_WIDTH* CHUNK_DEPTH* CHUNK_HEIGHT> m_Blocks;
+	//std::array<Block, CHUNK_WIDTH* CHUNK_DEPTH* CHUNK_HEIGHT> m_Blocks;
+	std::array<std::array<std::array<Block, CHUNK_WIDTH>, CHUNK_DEPTH>, CHUNK_HEIGHT> m_Blocks;
 
-	glm::vec2 m_Position;
+	glm::vec3 m_Position;
 	glm::mat4 m_Model;
 
 	MeshCPU m_MeshCPU;

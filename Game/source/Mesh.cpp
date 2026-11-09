@@ -95,7 +95,7 @@ void MeshCPU::addFace(BlockFace face, Block block, const glm::vec3& pos)
 		indices.push_back(baseIndex + faceIndices[i]);
 }
 
-void MeshCPU::ClearMesh()
+void MeshCPU::clearMesh()
 {
 	vertices.clear();
 	indices.clear();

@@ -23,7 +23,7 @@ struct MeshCPU
 	void addMeshPosition(const MeshCPU& other, const glm::vec3& pos);
 	void addFace(BlockFace face, Block block, const glm::vec3& pos);
 
-	void ClearMesh();
+	void clearMesh();
 };
 
 struct MeshGPU

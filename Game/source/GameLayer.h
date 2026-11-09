@@ -4,7 +4,7 @@
 #include <Atlas/Renderer.h>
 
 #include "Camera.h"
-
+#include "World.h"
 #include "Chunk.h"
 
 #include <array>
@@ -35,5 +35,5 @@ private:
 	std::shared_ptr<Atlas::Shader> m_Shader;
 	Texture2D* m_Texture = nullptr;
 
-	std::array<std::array<Chunk*, 5>, 5> m_Chunks;
+	World m_World;
 };

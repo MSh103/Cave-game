@@ -4,11 +4,15 @@
 
 #include "Debug/Timer.h"
 
-Chunk::Chunk(glm::vec2 pos)
+Chunk::Chunk(glm::vec3 pos)
 {
 	m_Position = pos;
 
-	m_Model = glm::translate(glm::mat4(1.0f), { m_Position.x * CHUNK_WIDTH, 0.f, m_Position.y * CHUNK_DEPTH });
+	m_Model = glm::translate(glm::mat4(1.0f), { 
+		m_Position.x * CHUNK_WIDTH, 
+		m_Position.y * CHUNK_HEIGHT, 
+		m_Position.z * CHUNK_DEPTH	
+	});
 }
 
 void Chunk::Generate()
@@ -21,34 +25,24 @@ void Chunk::Generate()
 		{
 			for (size_t y = 0; y < CHUNK_HEIGHT; y++)
 			{
-				int index = x + 16 * (z + 16 * y);
-
-				if (y == 255)
-					m_Blocks[index] = Block::Grass;
-				else if (y <= 254 && y >= 250)
-					m_Blocks[index] = Block::Dirt;
-				else if (y <= 245 && y >= 240)
-					m_Blocks[index] = Block::Air;
-				else if (y <= 238 && y >= 230)
-					m_Blocks[index] = Block::Air;
-				else if (y == 239)
-					m_Blocks[index] = Block::DiamondOre;
+				if(y == CHUNK_HEIGHT-1)
+					m_Blocks[y][z][x] = Block::Grass;
 				else
-					m_Blocks[index] = Block::Stone;
+					m_Blocks[y][z][x] = Block::Dirt;
 			}
 		}
 	}
 
 	
-	m_MeshCPU.vertices.reserve(70000);
-	m_MeshCPU.indices.reserve(105000);
+	m_MeshCPU.vertices.reserve(49152);
+	m_MeshCPU.indices.reserve(73728);
 }
 
 void Chunk::BuildMesh()
 {
 	ScopedTimer timer("Chunk::BuildMesh()");
 
-	m_MeshCPU.ClearMesh();
+	m_MeshCPU.clearMesh();
 
 	for (int y = 0; y < CHUNK_HEIGHT; y++)
 	{
@@ -56,25 +50,23 @@ void Chunk::BuildMesh()
 		{
 			for (int x = 0; x < CHUNK_WIDTH; x++)
 			{
-				const int index = x + CHUNK_WIDTH * (z + CHUNK_DEPTH* y);
-
-				if (m_Blocks[index] == Block::Air)
+				if (m_Blocks[y][z][x] == Block::Air)
 					continue;
 
-				if (IsAir(m_Blocks.data(), { x - 1, y, z }))
-					m_MeshCPU.addFace(BlockFace::Left, m_Blocks[index], { x, y, z });
-				if (IsAir(m_Blocks.data(), { x + 1, y, z }))
-					m_MeshCPU.addFace(BlockFace::Right, m_Blocks[index], { x, y, z });
+				if (IsAir({ x - 1, y, z }))
+					m_MeshCPU.addFace(BlockFace::Left, m_Blocks[y][z][x], {x, y, z});
+				if (IsAir({ x + 1, y, z }))
+					m_MeshCPU.addFace(BlockFace::Right, m_Blocks[y][z][x], { x, y, z });
 
-				if (IsAir(m_Blocks.data(), { x, y - 1, z }))
-					m_MeshCPU.addFace(BlockFace::Bottom, m_Blocks[index], { x, y, z });
-				if (IsAir(m_Blocks.data(), { x, y + 1, z }))
-					m_MeshCPU.addFace(BlockFace::Top, m_Blocks[index], { x, y, z });
+				if (IsAir({ x, y - 1, z }))
+					m_MeshCPU.addFace(BlockFace::Bottom, m_Blocks[y][z][x], { x, y, z });
+				if (IsAir({ x, y + 1, z }))
+					m_MeshCPU.addFace(BlockFace::Top, m_Blocks[y][z][x], { x, y, z });
 
-				if (IsAir(m_Blocks.data(), { x, y, z - 1 }))
-					m_MeshCPU.addFace(BlockFace::Back, m_Blocks[index], { x, y, z });
-				if (IsAir(m_Blocks.data(), { x, y, z + 1 }))
-					m_MeshCPU.addFace(BlockFace::Front, m_Blocks[index], { x, y, z });
+				if (IsAir({ x, y, z - 1 }))
+					m_MeshCPU.addFace(BlockFace::Back, m_Blocks[y][z][x], { x, y, z });
+				if (IsAir({ x, y, z + 1 }))
+					m_MeshCPU.addFace(BlockFace::Front, m_Blocks[y][z][x], { x, y, z });
 			}
 		}
 	}
@@ -98,15 +90,14 @@ void Chunk::Render(Camera& camera, Texture2D& atlas, Atlas::Shader& shader)
 	m_MeshGPU.render(shader);
 }
 
-bool Chunk::IsAir(Block* blocks, glm::ivec3 pos)
+bool Chunk::IsAir(glm::ivec3 pos)
 {
-	if (pos.x < 0 || pos.x >= 16
-		|| pos.z < 0 || pos.z >= 16
-		|| pos.y < 0 || pos.y >= 256)
+	if (pos.x < 0 || pos.x >= CHUNK_WIDTH
+		|| pos.z < 0 || pos.z >= CHUNK_DEPTH
+		|| pos.y < 0 || pos.y >= CHUNK_HEIGHT)
 		return true;
-
-	int index = pos.x + 16 * (pos.z + 16 * pos.y);
-	if (blocks[index] == Block::Air)
+	
+	if (m_Blocks[pos.y][pos.z][pos.x] == Block::Air)
 		return true;
 
 	return false;
