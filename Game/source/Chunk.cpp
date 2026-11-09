@@ -4,7 +4,9 @@
 
 #include "Debug/Timer.h"
 
-Chunk::Chunk(glm::vec3 pos)
+#include "World.h"
+
+Chunk::Chunk(const glm::vec3& pos)
 {
 	m_Position = pos;
 
@@ -25,10 +27,22 @@ void Chunk::Generate()
 		{
 			for (size_t y = 0; y < CHUNK_HEIGHT; y++)
 			{
-				if(y == CHUNK_HEIGHT-1)
-					m_Blocks[y][z][x] = Block::Grass;
-				else
-					m_Blocks[y][z][x] = Block::Dirt;
+				if (m_Position.y == NO_CHUNKS_Y-1)
+				{
+					if (y == CHUNK_HEIGHT - 1)
+						m_Blocks[y][z][x] = Block::Grass;
+					else
+						m_Blocks[y][z][x] = Block::Dirt;
+				}
+				else if (m_Position.y == 0) {
+					if (y == 0)
+						m_Blocks[y][z][x] = Block::DiamondOre;
+					else
+						m_Blocks[y][z][x] = Block::Stone;
+				}
+				else {
+					m_Blocks[y][z][x] = Block::Stone;
+				}
 			}
 		}
 	}
@@ -38,7 +52,7 @@ void Chunk::Generate()
 	m_MeshCPU.indices.reserve(73728);
 }
 
-void Chunk::BuildMesh()
+void Chunk::BuildMesh(World* world)
 {
 	ScopedTimer timer("Chunk::BuildMesh()");
 
@@ -53,25 +67,29 @@ void Chunk::BuildMesh()
 				if (m_Blocks[y][z][x] == Block::Air)
 					continue;
 
-				if (IsAir({ x - 1, y, z }))
+				auto wX = m_Position.x *CHUNK_WIDTH  + x;
+				auto wY = m_Position.y *CHUNK_HEIGHT + y;
+				auto wZ = m_Position.z *CHUNK_DEPTH  + z;
+
+				if (world->IsAir({ wX - 1, wY, wZ }))
 					m_MeshCPU.addFace(BlockFace::Left, m_Blocks[y][z][x], {x, y, z});
-				if (IsAir({ x + 1, y, z }))
+				if (world->IsAir({ wX + 1, wY, wZ }))
 					m_MeshCPU.addFace(BlockFace::Right, m_Blocks[y][z][x], { x, y, z });
 
-				if (IsAir({ x, y - 1, z }))
+				if (world->IsAir({ wX, wY - 1, wZ }))
 					m_MeshCPU.addFace(BlockFace::Bottom, m_Blocks[y][z][x], { x, y, z });
-				if (IsAir({ x, y + 1, z }))
+				if (world->IsAir({ wX, wY + 1, wZ }))
 					m_MeshCPU.addFace(BlockFace::Top, m_Blocks[y][z][x], { x, y, z });
 
-				if (IsAir({ x, y, z - 1 }))
+				if (world->IsAir({ wX, wY, wZ - 1 }))
 					m_MeshCPU.addFace(BlockFace::Back, m_Blocks[y][z][x], { x, y, z });
-				if (IsAir({ x, y, z + 1 }))
+				if (world->IsAir({ wX, wY, wZ + 1 }))
 					m_MeshCPU.addFace(BlockFace::Front, m_Blocks[y][z][x], { x, y, z });
 			}
 		}
 	}
 
-	Atlas::Log::Core::Trace("VertSize: {}, IndicesSize: {}, VertCapacity: {}, IndicesCapacity: {}", m_MeshCPU.vertices.size(), m_MeshCPU.indices.size(), m_MeshCPU.vertices.capacity(), m_MeshCPU.indices.capacity());
+	//Atlas::Log::Core::Trace("VertSize: {}, IndicesSize: {}, VertCapacity: {}, IndicesCapacity: {}", m_MeshCPU.vertices.size(), m_MeshCPU.indices.size(), m_MeshCPU.vertices.capacity(), m_MeshCPU.indices.capacity());
 }
 
 void Chunk::UploadMesh()
@@ -92,10 +110,10 @@ void Chunk::Render(Camera& camera, Texture2D& atlas, Atlas::Shader& shader)
 
 bool Chunk::IsAir(glm::ivec3 pos)
 {
-	if (pos.x < 0 || pos.x >= CHUNK_WIDTH
-		|| pos.z < 0 || pos.z >= CHUNK_DEPTH
-		|| pos.y < 0 || pos.y >= CHUNK_HEIGHT)
-		return true;
+	//if (pos.x < 0 || pos.x >= CHUNK_WIDTH
+	//	|| pos.z < 0 || pos.z >= CHUNK_DEPTH
+	//	|| pos.y < 0 || pos.y >= CHUNK_HEIGHT)
+	//	return true;
 	
 	if (m_Blocks[pos.y][pos.z][pos.x] == Block::Air)
 		return true;

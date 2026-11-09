@@ -2,7 +2,7 @@
 
 
 Game::Game() 
-	: Layer("GameLayer"), m_Camera({{-10.f, 0.f, -10.f}, 75.f})
+	: Layer("GameLayer"), m_Camera({{2*16.f, 6*16.f, 2*16.f}, 75.f})
 {}
 
 void Game::OnAttach()

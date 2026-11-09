@@ -12,25 +12,43 @@ World::World()
 		{
 			for (std::size_t x = 0; x < NO_CHUNKS_X; x++)
 			{ 
-				Chunk* c = new Chunk({ x, y, z });
+				auto c = std::make_unique<Chunk>(glm::vec3({ x, y, z }));
 				c->Generate();
-				c->BuildMesh();
-				c->UploadMesh();
-				m_Chunks.push_back(c);
+				m_Chunks.push_back(std::move(c));
 			}
 		}
 	}
-}
 
-World::~World()
-{
 	for (auto& c : m_Chunks)
-		delete c;
+	{
+		c->BuildMesh(this);
+		c->UploadMesh();
+	}
+	
 }
 
 bool World::IsAir(const glm::vec3& pos)
 {
-	return false;
+	int x = (int)pos.x; // WORLD POS
+	int y = (int)pos.y; // WORLD POS
+	int z = (int)pos.z; // WORLD POS
+
+	if (x >= (NO_CHUNKS_X * CHUNK_WIDTH)  || x < 0 ||
+	    y >= (NO_CHUNKS_Y * CHUNK_HEIGHT) || y < 0 ||
+	    z >= (NO_CHUNKS_Z * CHUNK_DEPTH)  || z < 0)
+		return true;
+
+	int cX = x / CHUNK_WIDTH;
+	int cY = y / CHUNK_HEIGHT;
+	int cZ = z / CHUNK_DEPTH;
+
+	int lX = x % CHUNK_WIDTH;
+	int lY = y % CHUNK_HEIGHT;
+	int lZ = z % CHUNK_DEPTH;
+
+	int index = cX + NO_CHUNKS_X * (cZ + NO_CHUNKS_Z * cY);
+
+	return m_Chunks[index]->IsAir({ lX, lY, lZ });
 }
 
 void World::Render(Camera& camera, Texture2D& atlas, Atlas::Shader& shader)

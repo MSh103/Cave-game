@@ -17,20 +17,20 @@ static constexpr std::size_t CHUNK_WIDTH  = 16;
 static constexpr std::size_t CHUNK_DEPTH  = 16;
 static constexpr std::size_t CHUNK_HEIGHT = 16;
 
+class World;
 
 class Chunk
 {
 public:
-	Chunk(glm::vec3 pos);
+	Chunk(const glm::vec3& pos);
 	~Chunk() = default;
 
 	void Generate();
-	void BuildMesh();
+	void BuildMesh(World* world);
 	void UploadMesh();
 
 	void Render(Camera& camera, Texture2D& atlas, Atlas::Shader& shader);
 
-private:
 	bool IsAir(glm::ivec3 pos);
 
 private:

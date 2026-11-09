@@ -6,23 +6,21 @@
 
 #include <Atlas/Renderer.h>
 #include <vector>
+#include <memory>
 
-class Chunk;
-class Camera;
-class Texture2D;
-
+#include "Chunk.h"
 
 class World
 {
 public:
 	World();
-	~World();
+	~World() = default;
 
 	bool IsAir(const glm::vec3& pos);
 
 	void Render(Camera& camera, Texture2D& atlas, Atlas::Shader& shader);
 
 private:
-	std::vector<Chunk*> m_Chunks;
+	std::vector<std::unique_ptr<Chunk>> m_Chunks;
 };
 
